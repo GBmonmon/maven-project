@@ -1,7 +1,8 @@
 pipeline {
     agent any
-    tools{
-        maven: 'localMaven'
+
+    tools {
+        maven 'localMaven'
     }
 
     parameters {
