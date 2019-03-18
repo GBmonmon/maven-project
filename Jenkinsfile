@@ -27,7 +27,7 @@ pipeline {
     }
 
 
-    }
+
 
     stage('Build to prod'){
       steps{
@@ -46,6 +46,7 @@ pipeline {
 
       }
     }
+  }
 
 
 
