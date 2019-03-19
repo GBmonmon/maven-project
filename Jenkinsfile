@@ -5,50 +5,45 @@ pipeline {
       maven 'localMaven'
   }
 
-  stages{
+  parameters {
+    string(name: "tomcat_dev", defaultValue:"13.56.165.19", description: "for staging")
+    string(name: "tomcat_prod", defaultValue:"18.144.71.147", description: "for prod")
+  }
 
-    stage('Build'){
-      steps{
-        sh 'mvn clean package'
-      }
-      post{
-        success{
-          echo 'Now Archiving...'
-          archiveArtifacts artifacts: '**/target/*.war'
-        }
-      }
+  triggers{
+    pollSCM("* * * * *")
+  }
 
+stages{
+  stage("Build"){
+    steps{
+      sh "mvn clean package"
+    }
+    post{
+      success{
+        echo "Now Archiving..."
+        archiveArtifacts artifacts: "**/target/*.war"
+      }
     }
 
-    stage('Build to staging'){
-      steps{
-        build job: 'deploy-to-staging'
+  }
+
+  stage("Deployment"){
+    parallel{
+      stage("Deploy-to-staging"){
+        steps{
+          sh "scp -i /Users/jerry/Documents/awsPem/tomcatDemo.pem **/target/*.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat7/webapps"
+        }
       }
-    }
 
-
-
-
-    stage('Build to prod'){
-      steps{
-        timeout(time:5, unit:'DAYS'){
-          input message: 'Approve production deployment?'
+      stage("Deploy-to-production"){
+        steps{
+          sh "scp -i /Users/jerry/Documents/awsPem/tomcatDemo.pem **/target/*.war ec2-user@${params.tomcat_prod}:/var/lib/tomcat7/webapps"
         }
-        build job: 'deploy-to-prod'
-      }
-      post{
-        success{
-          echo "Code deploy to production"
-        }
-        failure{
-          echo "Fail"
-        }
-
       }
     }
   }
-
-
+}
 
 
 }
