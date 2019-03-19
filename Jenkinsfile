@@ -39,6 +39,7 @@ stages{
 
       stage("Deploy-to-production"){
         steps{
+          sh "ssh -i /Users/jerry/Documents/awsPem/tomcatDemo.pem ec2-user@${params.tomcat_prod} \"sudo chmod 777 /var/lib/tomcat7/webapps\""
           sh "scp -i /Users/jerry/Documents/awsPem/tomcatDemo.pem **/target/*.war ec2-user@${params.tomcat_prod}:/var/lib/tomcat7/webapps"
         }
       }
