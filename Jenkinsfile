@@ -32,6 +32,7 @@ stages{
     parallel{
       stage("Deploy-to-staging"){
         steps{
+          sh "ssh -i /Users/jerry/Documents/awsPem/tomcatDemo.pem ec2-user@${params.tomcat_dev} \"sudo chmod 777 /var/lib/tomcat7\""
           sh "scp -i /Users/jerry/Documents/awsPem/tomcatDemo.pem **/target/*.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat7/webapps"
         }
       }
@@ -47,3 +48,4 @@ stages{
 
 
 }
+ssh -i /Users/jerry/Documents/awsPem/tomcatDemo.pem ec2-user@13.56.165.19:/var/lib/tomcat7/webapps
