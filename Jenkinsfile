@@ -48,4 +48,3 @@ stages{
 
 
 }
-ssh -i /Users/jerry/Documents/awsPem/tomcatDemo.pem ec2-user@13.56.165.19:/var/lib/tomcat7/webapps
